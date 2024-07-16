@@ -14,6 +14,9 @@ from kinematics import xyz_to_c6d, c6d_to_bins, xyz_to_t2d
 from util_module import XYZConverter
 from chemical import NTOTAL, NTOTALDOFS, NAATOKENS, INIT_CRDS, INIT_NA_CRDS
 
+
+print(torch.cuda.is_available())
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 # suppress dgl warning w/ newest pytorch
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -146,7 +149,7 @@ class Predictor():
             assert (len(fseq_i) >= 2)
             assert (fseq_i[0] in ["P","R","D","S","PR"])
             type_i,a3m_i = fseq_i[:2]
-
+            print("Fseq_i", fseq_i, len(fseq_i))
             if (fseq_i[0]=="PR"):
                 msa_i, ins_i, Ls_i = parse_mixed_fasta(a3m_i)
                 Ls.extend(Ls_i)
@@ -157,6 +160,11 @@ class Predictor():
                 else:
                     is_rna = fseq_i[0]=='R'
                     is_dna = fseq_i[0]=='D' or fseq_i[0]=='S'
+                    print("R/DA3M_i", a3m_i)
+                    with open(a3m_i, 'r') as readfile:
+                        with open("a3m_i_fasta.txt", 'w') as writefile:
+                            for line in readfile:
+                                writefile.write(line)
                     msa_i, ins_i = parse_fasta(a3m_i, rna_alphabet=is_rna, dna_alphabet=is_dna)
 
                 _, L = msa_i.shape
