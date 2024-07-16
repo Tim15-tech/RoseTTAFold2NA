@@ -90,7 +90,9 @@ do
     elif [ $type = 'R' ]
     then
         RNAMSA $fasta $tag
-        argstring+="R:$WDIR/$tag.afa "
+        argstring+="R:$WDIR/${tag}.afa " # created by upacTo... below
+        echo "UPAC to AUCGN-character"
+        python upacToCharacter.py $WDIR/$tag.afa
         nR=$((nR+1))
         lastR="$tag"
     elif [ $type = 'D' ]
